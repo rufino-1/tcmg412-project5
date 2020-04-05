@@ -38,7 +38,7 @@ def api_factor():
 	if 'str' in request.args:
 		n = int(request.args['str'])
 		if n<0:
-			print("Plese enter a positive integer")
+			return "Plese enter a positive integer!"
 		else:	
 			hstr=math.factorial(int(request.args['str']))
 			return "This is the factorial value of " + request.args['str'] + ": " + str(hstr)
@@ -62,12 +62,14 @@ def api_fibonacci():
 		# Python program to display the Fibonacci sequence
 		# check if the number of terms is valid
 		if nterms <= 0:
-			print("Plese enter a positive integer")
+			return "Plese enter a positive integer!"
 		else:
-			print("Fibonacci sequence:")
+			#return "Fibonacci sequence: "
+			a=[]
 			for i in range(nterms):
-				print(recur_fibo(i))
-			#return "This is the fibonacci array of values for " + request.args['str'] + ": " + str(hstr)
+				a.append(recur_fibo(i))
+				
+			return "The fibonacci sequence for " + request.args['str'] + " is: " + str(a)
 	else:
 		return "Error: No id field provided. Please specify an id."		
 
@@ -79,7 +81,7 @@ def api_prime():
 	if 'str' in request.args:
 		n = int(request.args['str'])
 		if n<0:
-			print("Plese enter a positive integer")
+			return "Plese enter a positive integer!"
 		else:	
 		
 			def isPrime(n) : 
@@ -119,9 +121,9 @@ def api_slack():
 	if 'str' in request.args:
 		hstr = request.args['str']
 		# Set the webhook_url to the one provided by Slack when you create the webhook at https://my.slack.com/services/new/incoming-webhook/
-		webhook_url = 'https://hooks.slack.com/services/T00000000/B00000000/XXXXXXXXXXXXXXXXXXXXXXXX'
+		webhook_url = 'https://tcmg412.slack.com/archives/C2581UKGA'
 		#https://tcmg412.slack.com/files/U257RQGDB/F0114JWNZQE/kanban_-_david_anderson_-_excerpts.pdf
-		slack_data = {'text': hstr + " @TCMG412GRP3 :spaghetti:"}
+		slack_data = {'text': hstr.encode() + " @TCMG412GRP3 :spaghetti:"}
 
 		response = requests.post(
 			webhook_url, data=json.dumps(slack_data),
