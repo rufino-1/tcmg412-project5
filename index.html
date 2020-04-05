@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script>
+function getHashValue(){
+//alert("hey");
+//alert(window.location);
+var url = window.location+"api/md5?str="+document.getElementById('md5string').value;
+//alert(url);
+window.open(url);
+}
+function getFactorialValue(){
+//alert("hey");
+//alert(window.location);
+var url = window.location+"api/factorial?str="+document.getElementById('mfactor').value;
+//alert(url);
+window.open(url);
+}
+function getFibonacciValue(){
+//alert("hey");
+//alert(window.location);
+var url = window.location+"api/fibonacci?str="+document.getElementById('mfib').value;
+//alert(url);
+window.open(url);
+}
+function checkForPrime(){
+//alert("hey");
+//alert(window.location);
+var url = window.location+"api/is-prime?str="+document.getElementById('mprime').value;
+//alert(url);
+window.open(url);
+}
+function postSlack(){
+//alert("hey");
+//alert(window.location);
+var url = window.location+"api/slack-alert?str="+document.getElementById('mslack').value;
+//alert(url);
+window.open(url);
+}
+
+
+</script>
+</head>
+<body>
+
+<h2>TCMG 412 Project4 - Team#3</h2>
+
+<form action="/action_page.php">
+  <label for="md5string">Enter Any String (will return hashed value of string):</label><br>
+  <input type="text" id="md5string" name="md5string" value="">&nbsp;&nbsp;<input type="button" value="Submit" onclick='getHashValue()'>
+  <br><br>
+  <label for="mfactor">Enter any Integer  (will return the factorial of given number):</label><br>
+  <input type="text" id="mfactor" name="mfactor" value="">&nbsp;&nbsp;<input type="button" value="Submit" onclick='getFactorialValue()'>
+  <br><br>
+  <label for="mfib">Enter any Integer  (will display the Fibonacci sequence up to the given number):</label><br>
+  <input type="text" id="mfib" name="mfib" value="">&nbsp;&nbsp;<input type="button" value="Submit" onclick='getFibonacciValue()'>
+  <br><br>
+  <label for="mprime">Enter any Integer  (will determine whether given number is a Prime Number):</label><br>
+  <input type="text" id="mprime" name="mprime" value="">&nbsp;&nbsp;<input type="button" value="Submit" onclick='checkForPrime()'>
+  <br><br>
+  <label for="mslack">Send message to class Slack Channel (will post given string to class Slack channel and will return status of Post):</label><br>
+  <input type="text" id="mslack" name="mslack" value="">&nbsp;&nbsp;<input type="button" value="Submit" onclick='postSlack()'>
+</form> 
+
+<p>This is a test Flask App</p>
+
+</body>
+</html>
