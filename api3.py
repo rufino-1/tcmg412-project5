@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request
-import json, pandas as pd
+import json
 import hashlib
 import math
 
@@ -10,13 +10,6 @@ app.config["DEBUG"] = True
 @app.route("/")
 def home():
         return render_template('index.html')
-
-@app.route('/api/astrosplayers/all', methods=['GET'])
-def GetData():
-    df = pd.read_csv("DemoData.csv")
-    temp = df.to_dict('records')
-    columnNames = df.columns.values
-    return render_template('record.html', records=temp, colnames=columnNames)
 
 @app.route('/api/md5', methods=['GET'])
 def api_str():
