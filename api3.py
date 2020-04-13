@@ -106,7 +106,7 @@ def api_prime():
 	else:
 		return "Error: No id field provided. Please specify an id."
 		
-@app.route('/api/slack-alert', methods=['POST'])
+@app.route('/api/slack-alert')
 def api_slack():
 	# Check if an str was provided as part of the URL.
 	# If str is provided, assign it to a variable.
@@ -116,7 +116,7 @@ def api_slack():
 		# Set the webhook_url to the one provided by Slack when you create the webhook at https://my.slack.com/services/new/incoming-webhook/
 		webhook_url = 'https://hooks.slack.com/services/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'
 		#https://tcmg412.slack.com/files/U257RQGDB/F0114JWNZQE/kanban_-_david_anderson_-_excerpts.pdf
-		slack_data = {'text': " @TCMG412GRP3 :spaghetti:"}
+		slack_data = {'text': hstr}
 
 		response = requests.post(
 			webhook_url, data=json.dumps(slack_data),
