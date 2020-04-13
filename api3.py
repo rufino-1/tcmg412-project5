@@ -131,4 +131,6 @@ def api_slack():
 			return "Your message was sucessfully posted!"
 	else:
 		return "Error: No id field provided. Please specify an id."
-app.run()  
+
+if __name__ == '__main__':
+    app.run(debug=False, host='0.0.0.0')  
