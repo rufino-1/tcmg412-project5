@@ -19,8 +19,8 @@ def api_str(mstring):
 	#if 'str' in request.args:
 	
 
-		
-	hstr=hashlib.sha224(mstring.encode()).hexdigest()
+		 
+	hstr=hashlib.md5(mstring.encode()).hexdigest()
 	
 	data = {
 		'input'  : mstring,
@@ -56,7 +56,7 @@ def api_factor(myint):
 	
 			js = json.dumps(data)
 
-			resp = Response(jsonify(data), status=200, mimetype='application/json')
+			resp = Response(js, status=200, mimetype='application/json')
 	
 			return resp	
 			#return "Input: " + myint + " Ouptut: " + str(hstr)
@@ -73,8 +73,9 @@ def api_fibonacci(myint):
 		def recur_fibo(n):
 			if n <= 1:
 				return n
-			else:
-				return(recur_fibo(n-1) + recur_fibo(n-2))
+			if n == 1 or n == 2:
+				return 1	
+			return(recur_fibo(n-1) + recur_fibo(n-2))
 				
 		nterms = int(myint)
 		# Python program to display the Fibonacci sequence
@@ -85,7 +86,10 @@ def api_fibonacci(myint):
 			#return "Fibonacci sequence: "
 			a=[]
 			for i in range(nterms):
-				a.append(recur_fibo(i))
+				m = recur_fibo(i)
+				if m > nterms:
+					break    # break here   
+				a.append(m)
 			
 			data = {
 				'input'  : myint,
@@ -162,7 +166,7 @@ def api_slack(string):
 		webhook_url = 'https://hooks.slack.com/services/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'
 		#https://tcmg412.slack.com/files/U257RQGDB/F0114JWNZQE/kanban_-_david_anderson_-_excerpts.pdf
 		slack_data = {'text': hstr}
-
+			
 		response = requests.post(
 			webhook_url, data=json.dumps(slack_data),
 			headers={'Content-Type': 'application/json'}
@@ -170,10 +174,24 @@ def api_slack(string):
 		if response.status_code != 200:
 			raise ValueError(
 			'Request to slack returned an error %s, the response is:\n%s'
+			#data.append({'output':response.status_code})
 				% (response.status_code, response.text)
 			)
 		if response.status_code == 200:
-			return "Your message was sucessfully posted!"
+			#data.append({'output':response.status_code})
+			#return "Your message was sucessfully posted!"
+		
+			data = {
+				'input'  : hstr,
+				'output' : response.status_code
+			}
+		
+			js = json.dumps(data)
+			#js = jsonify(data)
+
+			resp = Response(js, status=200, mimetype='application/json')
+	
+			return resp
 	#else:
 		#return "Error: No id field provided. Please specify an id."
 if __name__ == '__main__':
