@@ -1,49 +1,73 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, Response
 import json
 import hashlib
 import math
-
+import requests
 app = Flask(__name__)
 app.config["DEBUG"] = True
 
 
 @app.route("/")
-def home():
-        return render_template('index.html')
+#def home():
+        #return render_template('index.html')
 
-@app.route('/api/md5', methods=['GET'])
-def api_str():
+@app.route('/md5/<mstring>', methods=['GET'])
+def api_str(mstring):
 	# Check if an str was provided as part of the URL.
 	# If str is provided, assign it to a variable.
 	# If no ID is provided, display an error in the browser.
-	if 'str' in request.args:
+	#if 'str' in request.args:
+	
+
 		
-		hstr=hashlib.sha224(request.args['str'].encode()).hexdigest()
-		return "This is the hashed Value of " + request.args['str'] + ": " + hstr
-	else:
-		return "Error: No id field provided. Please specify an id."
+	hstr=hashlib.sha224(mstring.encode()).hexdigest()
+	
+	data = {
+		'input'  : mstring,
+		'ouptut' : hstr
+	}
+	
+	js = json.dumps(data)
 
-@app.route('/api/factorial', methods=['GET'])
-def api_factor():
+	resp = Response(js, status=200, mimetype='application/json')
+	
+	return resp
+	
+	#return "Input: " + string + " Output: " + hstr
+	#else:
+		#return "Error: No id field provided. Please specify an id."
+
+@app.route('/factorial/<myint>', methods=['GET'])
+def api_factor(myint):
 	# Check if an str was provided as part of the URL.
 	# If str is provided, assign it to a variable.
 	# If no ID is provided, display an error in the browser.
-	if 'str' in request.args:
-		n = int(request.args['str'])
+	#if 'str' in request.args:
+		n = int(myint)
 		if n<0:
 			return "Plese enter a positive integer!"
 		else:	
-			hstr=math.factorial(int(request.args['str']))
-			return "This is the factorial value of " + request.args['str'] + ": " + str(hstr)
-	else:
-		return "Error: No id field provided. Please specify an id."
+			hstr=math.factorial(int(myint))
+			data = {
+				'input'  : myint,
+				'ouptut' : hstr
+			}
+	
+			js = json.dumps(data)
 
-@app.route('/api/fibonacci', methods=['GET'])
-def api_fibonacci():
+			resp = Response(js, status=200, mimetype='application/json')
+	
+			return resp			
+			#return "Input: " + myint + " Ouptut: " + str(hstr)
+	#else:
+		#return "Error: No id field provided. Please specify an id."
+
+@app.route('/fibonacci/<myint>', methods=['GET'])
+def api_fibonacci(myint):
 	# Check if an str was provided as part of the URL.
 	# If str is provided, assign it to a variable.
 	# If no ID is provided, display an error in the browser.
-	if 'str' in request.args:
+	#if 'str' in request.args:
 	
 		def recur_fibo(n):
 			if n <= 1:
@@ -51,7 +75,7 @@ def api_fibonacci():
 			else:
 				return(recur_fibo(n-1) + recur_fibo(n-2))
 				
-		nterms = int(request.args['str'])
+		nterms = int(myint)
 		# Python program to display the Fibonacci sequence
 		# check if the number of terms is valid
 		if nterms <= 0:
@@ -61,18 +85,28 @@ def api_fibonacci():
 			a=[]
 			for i in range(nterms):
 				a.append(recur_fibo(i))
-				
-			return "The fibonacci sequence for " + request.args['str'] + " is: " + str(a)
-	else:
-		return "Error: No id field provided. Please specify an id."		
+			
+			data = {
+				'input'  : myint,
+				'ouptut' : str(a)
+			}
+	
+			js = json.dumps(data)
 
-@app.route('/api/is-prime', methods=['GET'])
-def api_prime():
+			resp = Response(js, status=200, mimetype='application/json')
+	
+			return resp				
+			#return "Input: " + myint + "  Ouptut: " + str(a)
+	#else:
+		#return "Error: No id field provided. Please specify an id."		
+
+@app.route('/is-prime/<myint>', methods=['GET'])
+def api_prime(myint):
 	# Check if an str was provided as part of the URL.
 	# If str is provided, assign it to a variable.
 	# If no ID is provided, display an error in the browser.
-	if 'str' in request.args:
-		n = int(request.args['str'])
+	#if 'str' in request.args:
+		n = int(myint)
 		if n<0:
 			return "Plese enter a positive integer!"
 		else:	
@@ -97,24 +131,34 @@ def api_prime():
 					
 				return True
 		
-			hstr=int(request.args['str'])
-			if(isPrime(hstr)) : 
-				return "The given value of " + request.args['str'] + " IS a Prime Number!"
-			else :  
-				return "The given value of " + request.args['str'] + " IS NOT a Prime Number!"
+			hstr=int(myint)
+			#if(isPrime(hstr)) : 
+			data = {
+				'input'  : int(myint),
+				'ouptut' : isPrime(hstr)
+			}
+	
+			js = json.dumps(data)
+
+			resp = Response(js, status=200, mimetype='application/json')
+	
+			return resp			
+				#return "Input: " + myint + " Output: TRUE"
+			#else :  
+				#return "Input: " + myint + " Output: FALSE"
 			
-	else:
-		return "Error: No id field provided. Please specify an id."
+	#else:
+		#return "Error: No id field provided. Please specify an id."
 		
-@app.route('/api/slack-alert')
-def api_slack():
+@app.route('/slack-alert/<string>')
+def api_slack(string):
 	# Check if an str was provided as part of the URL.
 	# If str is provided, assign it to a variable.
 	# If no ID is provided, display an error in the browser.
-	if 'str' in request.args:
-		hstr = request.args['str']
+	#if 'str' in request.args:
+		hstr = string
 		# Set the webhook_url to the one provided by Slack when you create the webhook at https://my.slack.com/services/new/incoming-webhook/
-		webhook_url = 'https://hooks.slack.com/services/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'
+		webhook_url = 'https://hooks.slack.com/services/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'
 		#https://tcmg412.slack.com/files/U257RQGDB/F0114JWNZQE/kanban_-_david_anderson_-_excerpts.pdf
 		slack_data = {'text': hstr}
 
@@ -129,8 +173,7 @@ def api_slack():
 			)
 		if response.status_code == 200:
 			return "Your message was sucessfully posted!"
-	else:
-		return "Error: No id field provided. Please specify an id."
+	#else:
+		#return "Error: No id field provided. Please specify an id."
 
-if __name__ == '__main__':
-    app.run(debug=False, host='0.0.0.0')  
+app.run()  
