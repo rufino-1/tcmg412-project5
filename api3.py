@@ -93,7 +93,7 @@ def api_fibonacci(myint):
 			
 			data = {
 				'input'  : myint,
-				'output' : str(a)
+				'output' : a
 			}
 	
 			js = json.dumps(data)
@@ -172,6 +172,7 @@ def api_slack(string):
 			headers={'Content-Type': 'application/json'}
 		)
 		if response.status_code != 200:
+			mbool = False
 			raise ValueError(
 			'Request to slack returned an error %s, the response is:\n%s'
 			#data.append({'output':response.status_code})
@@ -180,18 +181,19 @@ def api_slack(string):
 		if response.status_code == 200:
 			#data.append({'output':response.status_code})
 			#return "Your message was sucessfully posted!"
+			mbool = True
+			
+		data = {
+			'input'  : hstr,
+			'output' : mbool
+		}
 		
-			data = {
-				'input'  : hstr,
-				'output' : response.status_code
-			}
-		
-			js = json.dumps(data)
-			#js = jsonify(data)
+		js = json.dumps(data)
+		#js = jsonify(data)
 
-			resp = Response(js, status=200, mimetype='application/json')
+		resp = Response(js, status=200, mimetype='application/json')
 	
-			return resp
+		return resp
 	#else:
 		#return "Error: No id field provided. Please specify an id."
 
