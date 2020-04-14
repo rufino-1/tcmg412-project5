@@ -163,7 +163,7 @@ def api_slack(string):
 	#if 'str' in request.args:
 		hstr = string
 		# Set the webhook_url to the one provided by Slack when you create the webhook at https://my.slack.com/services/new/incoming-webhook/
-		webhook_url = 'https://hooks.slack.com/services/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'
+		webhook_url = 'https://hooks.slack.com/services/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'
 		#https://tcmg412.slack.com/files/U257RQGDB/F0114JWNZQE/kanban_-_david_anderson_-_excerpts.pdf
 		slack_data = {'text': hstr}
 			
