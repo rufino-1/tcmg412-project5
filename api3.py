@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, Response
+from flask import Flask, jsonify,render_template, request, Response
 import json
 import hashlib
 import math
@@ -11,7 +11,7 @@ app.config["DEBUG"] = True
 #def home():
         #return render_template('index.html')
 
-@app.route('/md5/<mstring>', methods=['GET'])
+@app.route('/md5/<mstring>', methods=['GET','POST'])
 def api_str(mstring):
 	# Check if an str was provided as part of the URL.
 	# If str is provided, assign it to a variable.
@@ -24,10 +24,11 @@ def api_str(mstring):
 	
 	data = {
 		'input'  : mstring,
-		'ouptut' : hstr
+		'output' : hstr
 	}
 	
 	js = json.dumps(data)
+	#js = jsonify(data)
 
 	resp = Response(js, status=200, mimetype='application/json')
 	
@@ -37,7 +38,7 @@ def api_str(mstring):
 	#else:
 		#return "Error: No id field provided. Please specify an id."
 
-@app.route('/factorial/<myint>', methods=['GET'])
+@app.route('/factorial/<int:myint>', methods=['GET','POST'])
 def api_factor(myint):
 	# Check if an str was provided as part of the URL.
 	# If str is provided, assign it to a variable.
@@ -50,19 +51,19 @@ def api_factor(myint):
 			hstr=math.factorial(int(myint))
 			data = {
 				'input'  : myint,
-				'ouptut' : hstr
+				'output' : hstr
 			}
 	
 			js = json.dumps(data)
 
-			resp = Response(js, status=200, mimetype='application/json')
+			resp = Response(jsonify(data), status=200, mimetype='application/json')
 	
-			return resp			
+			return resp	
 			#return "Input: " + myint + " Ouptut: " + str(hstr)
 	#else:
 		#return "Error: No id field provided. Please specify an id."
 
-@app.route('/fibonacci/<myint>', methods=['GET'])
+@app.route('/fibonacci/<int:myint>', methods=['GET','POST'])
 def api_fibonacci(myint):
 	# Check if an str was provided as part of the URL.
 	# If str is provided, assign it to a variable.
@@ -88,7 +89,7 @@ def api_fibonacci(myint):
 			
 			data = {
 				'input'  : myint,
-				'ouptut' : str(a)
+				'output' : str(a)
 			}
 	
 			js = json.dumps(data)
@@ -100,7 +101,7 @@ def api_fibonacci(myint):
 	#else:
 		#return "Error: No id field provided. Please specify an id."		
 
-@app.route('/is-prime/<myint>', methods=['GET'])
+@app.route('/is-prime/<int:myint>', methods=['GET','POST'])
 def api_prime(myint):
 	# Check if an str was provided as part of the URL.
 	# If str is provided, assign it to a variable.
@@ -134,8 +135,8 @@ def api_prime(myint):
 			hstr=int(myint)
 			#if(isPrime(hstr)) : 
 			data = {
-				'input'  : int(myint),
-				'ouptut' : isPrime(hstr)
+				'input'  : myint,
+				'output' : isPrime(hstr)
 			}
 	
 			js = json.dumps(data)
@@ -158,7 +159,7 @@ def api_slack(string):
 	#if 'str' in request.args:
 		hstr = string
 		# Set the webhook_url to the one provided by Slack when you create the webhook at https://my.slack.com/services/new/incoming-webhook/
-		webhook_url = 'https://hooks.slack.com/services/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'
+		webhook_url = 'https://hooks.slack.com/services/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'
 		#https://tcmg412.slack.com/files/U257RQGDB/F0114JWNZQE/kanban_-_david_anderson_-_excerpts.pdf
 		slack_data = {'text': hstr}
 
@@ -176,6 +177,4 @@ def api_slack(string):
 	#else:
 		#return "Error: No id field provided. Please specify an id."
 
-
-if __name__ == '__main__':
-        app.run(debug=False, host='0.0.0.0')  
+app.run()  
