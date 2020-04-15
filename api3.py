@@ -85,16 +85,15 @@ def api_fibonacci(myint):
 		# check if the number of terms is valid
 		if nterms <= 0:
 			return "Plese enter a positive integer!"
-		elif counter == 0 and nterms == 1:
-			data = {
-				'input': myint,
-				'output': [0, 1, 1]
-			}
-			js = json.dumps(data)
-
-			resp = Response(js, status=200, mimetype='application/json')
-
-			return resp
+		elif counter == 0:
+			if nterms == 1:
+				data = {
+					'input': myint,
+					'output': [0, 1, 1]
+				}
+				js = json.dumps(data)
+				resp = Response(js, status=200, mimetype='application/json')
+				return resp
 		else:
 			#return "Fibonacci sequence: "
 			counter += 1
