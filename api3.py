@@ -7,6 +7,8 @@ app = Flask(__name__)
 app.config["DEBUG"] = True
 
 
+#global counter = 0
+
 @app.route("/")
 #def home():
         #return render_template('index.html')
@@ -76,14 +78,26 @@ def api_fibonacci(myint):
 			if n == 1 or n == 2:
 				return 1	
 			return(recur_fibo(n-1) + recur_fibo(n-2))
-				
+
+		counter = 0
 		nterms = int(myint)
 		# Python program to display the Fibonacci sequence
 		# check if the number of terms is valid
 		if nterms <= 0:
 			return "Plese enter a positive integer!"
+		elif counter == 0 and nterms == 1:
+			data = {
+				'input': myint,
+				'output': [0, 1, 1]
+			}
+			js = json.dumps(data)
+
+			resp = Response(js, status=200, mimetype='application/json')
+
+			return resp
 		else:
 			#return "Fibonacci sequence: "
+			counter += 1
 			a=[]
 			for i in range(nterms):
 				m = recur_fibo(i)
