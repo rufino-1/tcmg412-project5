@@ -13,7 +13,7 @@ import time
 app = Flask(__name__)
 app.config["DEBUG"] = True
 
-redis_host = "localhost"
+redis_host = "redis"
 redis_port = 6379
 redis_password = ""
 
