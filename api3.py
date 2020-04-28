@@ -32,7 +32,7 @@ def home():
 	#this will display html form ready for input!
 	#return render_template('index.html')
 		
-@app.route('/keyvalue', methods=['POST'])
+@app.route('/keyval', methods=['POST'])
 def add_key():
 	#global mkeys
 	
@@ -78,7 +78,7 @@ def add_key():
 		#return r.get("my_key")
 		
 		
-@app.route('/keyvalue', methods=['PUT'])
+@app.route('/keyval', methods=['PUT'])
 def update_key():
 	#mkeys = []
 	key = request.get_json()
