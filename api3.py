@@ -3,15 +3,189 @@ import json
 import hashlib
 import math
 import requests
+from collections import defaultdict
+# step 1: import the redis-py client package
+import redis
+import sys
+import argparse
+import time
+
 app = Flask(__name__)
 app.config["DEBUG"] = True
 
+redis_host = "localhost"
+redis_port = 6379
+redis_password = ""
+
+r = redis.StrictRedis(host=redis_host, port=redis_port, password=redis_password, decode_responses=True)
+mkeys = []
+
+
+#if __name__ == '__main__':
+    #hello_redis()
+
 
 @app.route("/")
-#def home():
-        #return render_template('index.html')
+def home():
+	return "Hello World"
+	
+	#this will display html form ready for input!
+	#return render_template('index.html')
+		
+@app.route('/keyvalue', methods=['POST'])
+def add_key():
+	#global mkeys
+	
+	key = request.get_json()
+	
+	mkeys.append(key)
+	d = json.dumps(mkeys)
+	
+	#r = redis.StrictRedis(host=redis_host, port=redis_port, password=redis_password, decode_responses=True)   
 
-@app.route('/md5/<mstring>', methods=['GET','POST'])
+	for item in mkeys:
+		# Set the fields in Redis
+		ret = r.set("mykey",list( item.keys() )[0],86400)	
+		ret = r.set("myvalue",list( item.values() )[0],86400)
+		#r.set("my_value", list( item.values() )[0])
+		#r.set("my_command", "CREATE new-key/new-value")
+		
+		#will return value of json object sent 
+		#return ( list( item.values() )[0] )
+		#results = {}
+		if ret:
+			msg = "CREATE new-key/new-value"
+			status = 200
+		else:
+			msg = "Unable to CREATE new-key/new-value"
+			status = 400
+		
+		#this causes error, connection error to redis ?? 
+		data = {
+			'key'  : r.get("mykey"),
+			'value' : r.get("myvalue"),
+			'command': msg,
+			'result': ret,
+			'error': ""
+		}
+	
+		js = json.dumps(data)
+		#js = jsonify(data)
+
+		resp = Response(js, status=status, mimetype='application/json')
+		
+		return resp
+		#return r.get("my_key")
+		
+		
+@app.route('/keyvalue', methods=['PUT'])
+def update_key():
+	#mkeys = []
+	key = request.get_json()
+	
+	mkeys.append(key)
+	d = json.dumps(mkeys)
+	
+	#r = redis.StrictRedis(host=redis_host, port=redis_port, password=redis_password, decode_responses=True)   
+
+	for item in mkeys:
+		# Set the fields in Redis
+		ret = r.set("mykey",list( item.keys() )[0],86400)	
+		ret = r.set("myvalue",list( item.values() )[0],86400)
+		#r.set("my_value", list( item.values() )[0])
+		#r.set("my_command", "CREATE new-key/new-value")
+		
+		#will return value of json object sent 
+		#return ( list( item.values() )[0] )
+		#results = {}
+		if ret:
+			msg = "Updated " + r.get("mykey") + " with new value " + r.get("myvalue")
+			status = 200
+		else:
+			msg = "Unable to Update key " + r.get("mykey")
+			status = 400
+		
+		#this causes error, connection error to redis ?? 
+		data = {
+			'key'  : r.get("mykey"),
+			'value' : r.get("myvalue"),
+			'command': msg,
+			'result': ret,
+			'error': ""
+		}
+	
+		js = json.dumps(data)
+		#js = jsonify(data)
+
+		resp = Response(js, status=status, mimetype='application/json')
+		
+		return resp
+
+@app.route('/keyvalue/<mstring>', methods=['DELETE'])
+def delete_key(mstring):
+	#mkeys = []
+	#mkeys.pop(mstring)
+	#return 'None', 200
+	okey = r.get("mykey")
+	ovalue = r.get("myvalue")
+	ret = r.delete("mykey",mstring)
+	if ret:
+		msg = "DELETE " + okey
+		status = 200	
+	else:
+		msg = "No such key exists"
+		status = 400 
+		
+	#this causes error, connection error to redis ?? 
+	data = {
+		'key'  : okey,
+		'value' : ovalue,
+		'command': msg,
+		'result': ret,
+		'error': status
+	}
+	
+	js = json.dumps(data)
+	#js = jsonify(data)
+
+	resp = Response(js, status=status, mimetype='application/json')
+		
+	return resp
+	
+@app.route('/keyvalue/<mstring>', methods=['GET'])
+def get_key(mstring):
+	ret = r.get("mykey")
+	ovalue = r.get("myvalue")
+	
+	if ret:
+		msg = "GET " + okey
+		status = 200	
+	else:
+		msg = "No such key exists"
+		status = 400 
+		
+	#this causes error, connection error to redis ?? 
+	data = {
+		'key'  : r.get("mykey"),
+		'value' : r.get("myvalue"),
+		'command': msg,
+		'result': ret,
+		'error': status
+	}
+	
+	js = json.dumps(data)
+	#js = jsonify(data)
+
+	resp = Response(js, status=status, mimetype='application/json')
+		
+	return resp
+
+@app.route('/clear', methods=['GET'])
+def clear_data():
+    r.flushall()
+    return "All Keys/Value pairs Removed"
+
+@app.route('/md5/<mstring>')
 def api_str(mstring):
 	# Check if an str was provided as part of the URL.
 	# If str is provided, assign it to a variable.
@@ -38,7 +212,7 @@ def api_str(mstring):
 	#else:
 		#return "Error: No id field provided. Please specify an id."
 
-@app.route('/factorial/<int:myint>', methods=['GET','POST'])
+@app.route('/factorial/<int:myint>')
 def api_factor(myint):
 	# Check if an str was provided as part of the URL.
 	# If str is provided, assign it to a variable.
@@ -63,7 +237,7 @@ def api_factor(myint):
 	#else:
 		#return "Error: No id field provided. Please specify an id."
 
-@app.route('/fibonacci/<int:myint>', methods=['GET','POST'])
+@app.route('/fibonacci/<int:myint>')
 def api_fibonacci(myint):
 	# Check if an str was provided as part of the URL.
 	# If str is provided, assign it to a variable.
@@ -71,10 +245,9 @@ def api_fibonacci(myint):
 	#if 'str' in request.args:
 	
 		def recur_fibo(n):
-			if n < 1:
+			if n <= 1:
 				return n
-			if n == 1:
-				return 1
+
 			return(recur_fibo(n-1) + recur_fibo(n-2))
 			
 		nterms = int(myint)
@@ -85,18 +258,11 @@ def api_fibonacci(myint):
 		else:
 			#return "Fibonacci sequence: "
 			a=[]
-			if nterms == 1:
-				for i in range(0, nterms+2):
-					m = recur_fibo(i)
-					if m > nterms:
-						break    # break here   
-					a.append(m)	
-			else:	
-				for i in range(0, nterms):
-					m = recur_fibo(i)
-					if m > nterms:
-						break    # break here   
-					a.append(m)
+			for i in range(0, nterms+3):
+				m = recur_fibo(i)
+				if m > nterms:
+					break    # break here   
+				a.append(m)
 			
 			data = {
 				'input'  : myint,
@@ -112,7 +278,7 @@ def api_fibonacci(myint):
 	#else:
 		#return "Error: No id field provided. Please specify an id."		
 
-@app.route('/is-prime/<int:myint>', methods=['GET','POST'])
+@app.route('/is-prime/<int:myint>')
 def api_prime(myint):
 	# Check if an str was provided as part of the URL.
 	# If str is provided, assign it to a variable.
