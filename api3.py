@@ -154,11 +154,11 @@ def delete_key(mstring):
 	
 @app.route('/keyval/<mstring>', methods=['GET'])
 def get_key(mstring):
-	ret = r.get(mstring)
+	ret = r.get(mstring).decode("unicode-escape")
 	#ovalue = r.get("myvalue")
 	
 	if ret:
-		msg = "GET " + okey
+		msg = "GET " + mstring
 		status = 200	
 	else:
 		msg = "No such key exists"
