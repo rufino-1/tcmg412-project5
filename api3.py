@@ -17,7 +17,7 @@ redis_host = "redis"
 redis_port = 6379
 redis_password = ""
 
-r = redis.StrictRedis(host=redis_host, port=redis_port, password=redis_password, decode_responses=True)
+r = redis.Redis(host=redis_host, port=redis_port)
 mkeys = []
 
 
@@ -121,7 +121,7 @@ def update_key():
 		
 		return resp
 
-@app.route('/keyvalue/<mstring>', methods=['DELETE'])
+@app.route('/keyval/<mstring>', methods=['DELETE'])
 def delete_key(mstring):
 	#mkeys = []
 	#mkeys.pop(mstring)
@@ -152,10 +152,10 @@ def delete_key(mstring):
 		
 	return resp
 	
-@app.route('/keyvalue/<mstring>', methods=['GET'])
+@app.route('/keyval/<mstring>', methods=['GET'])
 def get_key(mstring):
-	ret = r.get("mykey")
-	ovalue = r.get("myvalue")
+	ret = r.get(mstring)
+	#ovalue = r.get("myvalue")
 	
 	if ret:
 		msg = "GET " + okey
@@ -166,8 +166,8 @@ def get_key(mstring):
 		
 	#this causes error, connection error to redis ?? 
 	data = {
-		'key'  : r.get("mykey"),
-		'value' : r.get("myvalue"),
+		'key'  : mstring,
+		'value' : ret,
 		'command': msg,
 		'result': ret,
 		'error': status
